@@ -22,6 +22,7 @@ cap.set(4, 720)
 
 detector = htm.handDetector()
 xp, yp = 0, 0
+imgCanvas = np.zeros((720, 1280, 3), np.uint8)
 while True:
     # 1. Import image
     success, img = cap.read()
@@ -52,9 +53,12 @@ while True:
             if xp == 0 and yp == 0:
                 xp, yp = x1, y1
             cv2.line(img, (xp, yp), (x1, y1), (255, 0, 255), brushThickness)
+            cv2.line(imgCanvas, (xp, yp), (x1, y1), (255, 0, 255), brushThickness)
             xp, yp = x1, y1
     #img[0:251, 0:693] = header
+    img = cv2.addWeighted(img, 0.5, imgCanvas, 0.5, 0)
     cv2.imshow("Image", img)
+    cv2.imshow("Canvas", imgCanvas)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
