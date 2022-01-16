@@ -4,6 +4,8 @@ import time
 import os
 import HandTracking as htm
 
+brushThickness = 15
+
 folderPath = "Header"
 myList = os.listdir(folderPath)
 
@@ -19,7 +21,7 @@ cap.set(3, 1280)
 cap.set(4, 720)
 
 detector = htm.handDetector()
-
+xp, yp = 0, 0
 while True:
     # 1. Import image
     success, img = cap.read()
@@ -47,7 +49,11 @@ while True:
         if fingers[1] and fingers[2] == False:
             cv2.circle(img, (x1, y1), 15, (255, 0, 255), cv2.FILLED)
             # print('Drawing Mode')
-    img[0:251, 0:693] = header
+            if xp == 0 and yp == 0:
+                xp, yp = x1, y1
+            cv2.line(img, (xp, yp), (x1, y1), (255, 0, 255), brushThickness)
+            xp, yp = x1, y1
+    #img[0:251, 0:693] = header
     cv2.imshow("Image", img)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
